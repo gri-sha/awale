@@ -1,46 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-
-/*
- * AWALE GAME (also known as Oware, Wari, or Mancala)
- * 
- * RULES:
- * 1. The board has 12 pits (6 per player) and each pit starts with 4 seeds
- * 2. Players alternate turns, selecting a pit on their side
- * 3. Seeds from the selected pit are sown counter-clockwise, one per pit
- * 4. The starting pit is left empty (seeds are distributed to following pits) (the case when seeds >= 12)
- * 5. CAPTURING: After sowing, if the last seed lands in an opponent's pit
- *    and that pit now has 2 or 3 seeds, those seeds are captured
- * 6. Continue capturing backwards if previous pits also have 2 or 3 seeds (previous numerically, if we skipped the starting pit it will be stopped at starting pit)
- * 7. You cannot capture all opponent's seeds (must leave them with a move)
- * 8. If opponent has no seeds, you must give them seeds if possible (if it not possible player having the seeds takes all the seeds)
- * 9. Game ends when one player captures 25+ seeds or no more moves possible
- * 10. Player with most seeds wins
- */
-
-#define PITS_PER_PLAYER 6
-#define TOTAL_PITS 12
-#define INITIAL_SEEDS 4
-#define WINNING_SEEDS 25
-
-// Structure to represent the game board
-typedef struct {
-    int pits[TOTAL_PITS];  // Pits 0-5: Player 1, Pits 6-11: Player 2
-    int score[2];          // Captured seeds for each player
-    int current_player;    // 0 for Player 1, 1 for Player 2
-} Board;
-
-// Function prototypes
-void init_board(Board *board);
-void display_board(const Board *board);
-bool is_valid_move(const Board *board, int pit);
-bool opponent_has_seeds(const Board *board, int player);
-bool move_gives_seeds_to_opponent(const Board *board, int pit);
-void make_move(Board *board, int pit);
-bool is_game_over(const Board *board);
-void display_winner(const Board *board);
-int get_player_input(const Board *board);
+#include "awale.h"
 
 // Initialize the board with starting position
 void init_board(Board *board) {
@@ -319,33 +280,4 @@ int get_player_input(const Board *board) {
             return pit;
         }
     }
-}
-
-// Main game loop
-int main() {
-    Board board;
-    init_board(&board);
-    
-    printf("\n");
-    printf("╔═══════════════════════════════════╗\n");
-    printf("║     WELCOME TO AWALE GAME!       ║\n");
-    printf("╚═══════════════════════════════════╝\n");
-    printf("\n");
-    printf("Awale is a traditional African strategy game.\n");
-    printf("Capture more seeds than your opponent to win!\n");
-    printf("\n");
-    
-    // Main game loop
-    while (!is_game_over(&board)) {
-        display_board(&board);
-        int pit = get_player_input(&board);
-        make_move(&board, pit);
-        printf("\n");
-    }
-    
-    // Game is over
-    display_board(&board);
-    display_winner(&board);
-    
-    return 0;
 }

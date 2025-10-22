@@ -2,13 +2,12 @@
 
 CC = gcc
 CFLAGS = -Wall -Wextra -std=c99
-TARGET = awale
-SRC = awale.c
+TARGET = server
 
 all: $(TARGET)
 
-$(TARGET): $(SRC)
-	$(CC) $(CFLAGS) -o $(TARGET) $(SRC)
+$(TARGET): server.c awalee.c awale.h
+	$(CC) $(CFLAGS) -o $(TARGET) server.c awalee.c
 
 clean:
 	rm -f $(TARGET)
