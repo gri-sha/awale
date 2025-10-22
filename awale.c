@@ -9,12 +9,12 @@
  * 1. The board has 12 pits (6 per player) and each pit starts with 4 seeds
  * 2. Players alternate turns, selecting a pit on their side
  * 3. Seeds from the selected pit are sown counter-clockwise, one per pit
- * 4. The starting pit is left empty (seeds are distributed to following pits)
+ * 4. The starting pit is left empty (seeds are distributed to following pits) (the case when seeds >= 12)
  * 5. CAPTURING: After sowing, if the last seed lands in an opponent's pit
  *    and that pit now has 2 or 3 seeds, those seeds are captured
- * 6. Continue capturing backwards if previous pits also have 2 or 3 seeds
+ * 6. Continue capturing backwards if previous pits also have 2 or 3 seeds (previous numerically, if we skipped the starting pit it will be stopped at starting pit)
  * 7. You cannot capture all opponent's seeds (must leave them with a move)
- * 8. If opponent has no seeds, you must give them seeds if possible
+ * 8. If opponent has no seeds, you must give them seeds if possible (if it not possible player having the seeds takes all the seeds)
  * 9. Game ends when one player captures 25+ seeds or no more moves possible
  * 10. Player with most seeds wins
  */
@@ -180,6 +180,9 @@ void make_move(Board *board, int pit) {
     // Sow seeds counter-clockwise
     for (int i = 0; i < seeds; i++) {
         current_pit = (current_pit + 1) % TOTAL_PITS;
+        if (current_pit == pit) {
+            current_pit = (current_pit + 1) % TOTAL_PITS; // Skip the starting pit
+        }
         board->pits[current_pit]++;
     }
     
@@ -290,7 +293,7 @@ void display_winner(const Board *board) {
 // Get valid input from player
 int get_player_input(const Board *board) {
     int pit;
-    char input[100];
+    char input[10];
     
     while (true) {
         printf("Player %d, choose a pit (or 'q' to quit): ", board->current_player + 1);
